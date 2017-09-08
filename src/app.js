@@ -1,37 +1,22 @@
-// const Server = require('./server');
-const path = require('path');
-const express = require('express');
-const cors = require('express-cors');
-const bodyParser = require('body-parser')
-const port = (process.env.PORT || 3000);
-const app = express();
-const router = require('./router');
+"use strict";
+exports.__esModule = true;
+var express = require("express");
+var http = require("http");
+var app = express();
+app.set("port", process.env.PORT || 3000);
+app.get("/", function(req, res) {
+  res.send("test!");
+});
 
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.set("port", process.env.PORT || 3000);
+app.get("/whatup", function(req, res) {
+  res.send("whatup");
+});
 
-if (process.env.NODE_ENV !== 'production') {
-  const webpack = require('webpack');
-  const webpackDevMiddleware = require('webpack-dev-middleware');
-  const webpackHotMiddleware = require('webpack-hot-middleware');
-  const config = require('../webpack.config.js');
-  const compiler = webpack(config);
+// app.set("port", process.env.PORT || 3000);
+// app.get("/math", function(req, res) {
+//   res.send(Math.random());
 
-  app.use(webpackHotMiddleware(compiler));
-  app.use(webpackDevMiddleware(compiler, {
-    noInfo: true,
-    publicPath: config.output.publicPath
-  }));
-}
-
-app.use('/assets', express.static(path.join(__dirname, '../app/assets')));
-
-app.get('/', function (req, res) { res.sendFile(path.join(__dirname, '/../index.html')) });
-
-app.use('/api', router);
-app.get('/*', function (req, res) { res.sendFile(path.join(__dirname, '/../index.html')) });
-
-app.listen(port);
-
-console.log(`Listening at http://localhost:${port}`);
+http.createServer(app).listen(app.get("port"), function() {
+  console.log("Express server listening on port " + app.get("port"));
+});
