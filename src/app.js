@@ -53,3 +53,25 @@ app.post("/api/v1/users", (request, response) => {
       response.status(500).json({ error });
     });
 });
+
+// app.get("/api/v1/favorites", (request, response) => {
+//   database("favorites")
+//     .select()
+//     .then(favorites => {
+//       response.status(200).json(favorites);
+//     })
+//     .catch(error => {
+//       response.status(500).json({ error });
+//     });
+// });
+
+// app.post("/api/v1/favorites", (request, response) => {
+//   const favorite = request.body;
+
+//   for (let requiredParameter of ["title", "author", "google_id"]) {
+//     if (!favorite[requiredParameter]) {
+//       return response.status(422).send({
+//         error: `Expected format: { title: <String>, author: <String>, google_id: <String> }. You're missing a "${requiredParameter}" property.`
+//       });
+//     }
+//   }

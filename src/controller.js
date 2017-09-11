@@ -1,15 +1,29 @@
-// const request = require("request");
-// const API_KEY = AIzaSyCsLj4tAQnUWKe0nu2fU9CwYA5SMMQQRR0; // googlebooks api
-// const BASE_URL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=restaurant&keyword=cruise&key=${API_KEY}`;
+const environment = process.env.NODE_ENV || "development";
+const configuration = require("../knexfile")[environment];
+const database = require("knex")(configuration);
+const bookshelf = require("bookshelf")(database);
 
-// function getPlaces(req, res, next) {
-//   request(BASE_URL, function(error, response, body) {
-//     if (!error && response.statusCode == 200) {
-//       res.send(body);
-//     }
-//   });
-// }
-
-// module.exports = {
-//   getPlaces: getPlaces
-// };
+function login(req, res) {
+  database("users")
+    .where(req.body)
+    .select("id", "username", "email", "password")
+    .then(user => {
+      if (user.length) {
+        res.status(200).json({
+          error: false,
+          data: user
+        });
+      } else {
+        res.status(404).json({
+          error: true,
+          data: { message: "invalid info" }
+        });
+      }
+    })
+    .catch(error => {
+      response.status(500).json({
+        error: true,
+        data: { message: error.message }
+      });
+    });
+}
