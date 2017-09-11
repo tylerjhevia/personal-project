@@ -22,6 +22,8 @@ http.createServer(app).listen(app.get("port"), function() {
   console.log("Express server listening on port " + app.get("port"));
 });
 
+// USERS
+
 app.get("/api/v1/users", (request, response) => {
   database("users")
     .select()
@@ -54,24 +56,36 @@ app.post("/api/v1/users", (request, response) => {
     });
 });
 
-// app.get("/api/v1/favorites", (request, response) => {
-//   database("favorites")
-//     .select()
-//     .then(favorites => {
-//       response.status(200).json(favorites);
-//     })
-//     .catch(error => {
-//       response.status(500).json({ error });
-//     });
-// });
+// FAVORITES
 
-// app.post("/api/v1/favorites", (request, response) => {
-//   const favorite = request.body;
+app.get("/api/v1/favorites", (request, response) => {
+  database("favorites")
+    .select()
+    .then(favorites => {
+      response.status(200).json(favorites);
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
 
-//   for (let requiredParameter of ["title", "author", "google_id"]) {
-//     if (!favorite[requiredParameter]) {
-//       return response.status(422).send({
-//         error: `Expected format: { title: <String>, author: <String>, google_id: <String> }. You're missing a "${requiredParameter}" property.`
-//       });
-//     }
-//   }
+app.post("/api/v1/favorites", (request, response) => {
+  const favorite = request.body;
+
+  for (let requiredParameter of ["title", "author", "google_id"]) {
+    if (!favorite[requiredParameter]) {
+      return response.status(422).send({
+        error: `Expected format: { title: <String>, author: <String>, google_id: <String> }. You're missing a "${requiredParameter}" property.`
+      });
+    }
+  }
+
+  database("favorites")
+    .insert({ title: "tyler", author: "tyler", google_id: "tyler" }, "id")
+    .then(favorite => {
+      response.status(201).json({ id: favorite[0] });
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
