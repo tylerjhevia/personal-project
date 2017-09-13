@@ -76,9 +76,22 @@ app.post("/api/v1/users", (request, response) => {
   //     });
   //   }
   // }
+});
 
+app.post("/api/v1/users/new", (request, response) => {
   database("users")
-    .insert({ username: "tyler", email: "tyler", password: "tyler" }, "id")
+    .where({
+      username: request.body.username,
+      email: request.body.email
+    })
+    .insert(
+      {
+        username: request.body.username,
+        email: request.body.email,
+        password: request.body.password
+      },
+      "id"
+    )
     .then(user => {
       response.status(201).json({ id: user[0], cool: "yay" });
     })
