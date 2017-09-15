@@ -10,6 +10,7 @@ const environment = process.env.NODE_ENV || "development";
 const configuration = require("../knexfile")[environment];
 const database = require("knex")(configuration);
 const users = require("../routes/users");
+const favorites = require;
 
 app.use(cors());
 app.use(function(req, res, next) {
@@ -68,21 +69,14 @@ app.post("/api/v1/users", (request, response) => {
     .catch(error => {
       response.status(500).json({ error });
     });
-
-  // for (let requiredParameter of ["username", "email", "password"]) {
-  //   if (!user[requiredParameter]) {
-  //     return response.status(422).send({
-  //       error: `Expected format: { username: <String>, email: <String>, password: <String> }. You're missing a "${requiredParameter}" property.`
-  //     });
-  //   }
-  // }
 });
 
 app.post("/api/v1/users/new", (request, response) => {
   database("users")
     .where({
       username: request.body.username,
-      email: request.body.email
+      email: request.body.email,
+      password: request.body.password
     })
     .insert(
       {
@@ -92,9 +86,7 @@ app.post("/api/v1/users/new", (request, response) => {
       },
       "id"
     )
-    .then(user => {
-      response.status(201).json({ id: user[0], cool: "yay" });
-    })
+    .then(users => response.status(201).json(users))
     .catch(error => {
       response.status(500).json({ error });
     });
@@ -102,36 +94,48 @@ app.post("/api/v1/users/new", (request, response) => {
 
 // FAVORITES
 
-// app.get("/api/v1/favorites", (request, response) => {
-//   database("favorites")
-//     .select()
-//     .then(favorites => {
-//       response.status(200).json(favorites);
-//     })
-//     .catch(error => {
-//       response.status(500).json({ error });
-//     });
-// });
+app.get("/api/v1/favorites", (request, response) => {
+  database("favorites")
+    .select()
+    .then(favorites => {
+      response.status(200).json(favorites);
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
 
-// app.post("/api/v1/favorites", (request, response) => {
-//   const favorite = request.body;
+app.post("/api/v1/favorites", (request, response) => {
+  database("favorites")
+    .where({ user_id: request.body.user_id })
+    .select()
+    .then(favorites => {
+      response.status(200).json(favorites);
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
 
-//   for (let requiredParameter of ["title", "author", "google_id"]) {
-//     if (!favorite[requiredParameter]) {
-//       return response.status(422).send({
-//         error: `Expected format: { title: <String>, author: <String>, google_id: <String> }. You're missing a "${requiredParameter}" property.`
-//       });
-//     }
-//   }
-
-//   database("favorites")
-//     .insert({ title: "tyler", author: "tyler", google_id: "tyler" }, "id")
-//     .then(favorite => {
-//       response.status(201).json({ id: favorite[0] });
-//     })
-//     .catch(error => {
-//       response.status(500).json({ error });
-//     });
-// });
+app.post("/api/v1/favorites/new", (request, response) => {
+  database("favorites")
+    .where({
+      book_id: request.body.id,
+      volumeInfo: request.body.volumeInfo,
+      user_id: request.user_id
+    })
+    .insert(
+      {
+        book_id: request.body.id,
+        volumeInfo: request.body.volumeInfo,
+        user_id: request.body.user_id
+      },
+      "id"
+    )
+    .then(res => response.status(201).json(res))
+    .catch(error => {
+      response.status(500).json({ error });
+    });
+});
 
 module.exports = app;

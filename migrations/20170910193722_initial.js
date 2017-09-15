@@ -2,9 +2,9 @@ exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.createTable("favorites", function(table) {
       table.increments("id").primary();
-      table.string("title");
-      table.string("author");
-      table.string("google_id");
+      table.json("volumeInfo");
+      table.string("book_id");
+      table.integer("user_id");
 
       table.timestamps(true, true);
     })
