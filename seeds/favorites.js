@@ -2,14 +2,14 @@ exports.seed = (knex, Promise) => {
   return knex("favorites").del().then(promise => {
     return knex("favorites").insert([
       {
-        title: "The Hobbit",
-        author: "George R. R. Martin",
-        google_id: "iqh48asdi5"
+        volumeInfo: {},
+        book_id: "iqh48asdi5",
+        user_id: 116
       },
       {
-        title: "Game of Thrones",
-        author: "J. R. R. Tolkien",
-        google_id: "h3068233"
+        volumeInfo: {},
+        book_id: "h3068233",
+        user_id: 116
       }
     ]);
   });
