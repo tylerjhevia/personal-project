@@ -19,6 +19,7 @@ app.use(function(req, res, next) {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
   next();
 });
 
@@ -73,11 +74,6 @@ app.post("/api/v1/users", (request, response) => {
 
 app.post("/api/v1/users/new", (request, response) => {
   database("users")
-    .where({
-      username: request.body.username,
-      email: request.body.email,
-      password: request.body.password
-    })
     .insert(
       {
         username: request.body.username,
@@ -136,6 +132,17 @@ app.post("/api/v1/favorites/new", (request, response) => {
     .catch(error => {
       response.status(500).json({ error });
     });
+});
+
+app.delete("/api/v1/favorites/delete", (request, response) => {
+  database("favorites")
+    .where({
+      user_id: request.body.user_id,
+      book_id: request.body.book_id
+    })
+    .delete()
+    .then(res => res.json(res))
+    .catch(error => error);
 });
 
 module.exports = app;
