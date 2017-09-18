@@ -60,8 +60,7 @@ app.get("/api/v1/users", (request, response) => {
 app.post("/api/v1/users", (request, response) => {
   database("users")
     .where({
-      username: request.body.username,
-      password: request.body.password
+      username: request.body.username
     })
     .select()
     .then(users => {
@@ -71,6 +70,11 @@ app.post("/api/v1/users", (request, response) => {
       response.status(500).json({ error });
     });
 });
+
+// user submits username
+// get /users{username}
+// if response { user exists, display error }
+// catch { user doesn't exist, proceed with add user logic}
 
 app.post("/api/v1/users/new", (request, response) => {
   database("users")
